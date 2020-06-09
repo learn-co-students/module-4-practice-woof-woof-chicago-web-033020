@@ -1,23 +1,77 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import Filter from "./Filter";
+import DogList from "./DogList";
+import ShowDog from "./ShowDog";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <div id="filter-div">
-        <button id="good-dog-filter">Filter good dogs: OFF</button>
-      </div>
-      <div id="dog-bar">
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      dogs: [],
+      selected: {},
+      filter: false,
+    };
+  }
 
-      </div>
-      <div id="dog-summary-container">
-        <h1>DOGGO:</h1>
-        <div id="dog-info">
+  componentDidMount() {
+    fetch("http://localhost:3000/pups")
+      .then((resp) => resp.json())
+      .then((dogData) => {
+        this.setState({
+          dogs: dogData,
+        });
+      });
+  }
 
-        </div>
+  handleClick = (dog) => {
+    this.setState({
+      selected: dog,
+    });
+  };
+
+  toggleGood = (id, isGoodDog) => {
+    fetch(`http://localhost:3000/pups/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ isGoodDog: !isGoodDog }),
+    })
+      .then((resp) => resp.json())
+      .then((json) => {
+        const updatedDogs = this.state.dogs.map((dog) =>
+          dog.id === json.id ? json : dog
+        );
+        this.setState({
+          dogs: updatedDogs,
+          selected: json,
+        });
+      });
+  };
+
+  handleFilter = (filter) => {
+    this.setState({
+      filter: filter,
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <Filter handleFilter={this.handleFilter} />
+        <DogList
+          dogs={
+            this.state.filter
+              ? this.state.dogs.filter((dog) => dog.isGoodDog === true)
+              : this.state.dogs
+          }
+          handleClick={this.handleClick}
+        />
+        <ShowDog dog={this.state.selected} toggleGood={this.toggleGood} />
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
