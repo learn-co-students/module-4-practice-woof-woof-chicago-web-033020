@@ -7,7 +7,9 @@ export class App extends Component {
   
   state = {
     pups: [],
-    infoPup: null
+    infoPup: null,
+    filter: false,
+    goodPups: []
   };
 
   componentDidMount() {
@@ -24,35 +26,52 @@ export class App extends Component {
     this.setState({
       infoPup: pup
     })
-    }
+  }
 
-    goodDogClick = (pup) => {
-      const reqObj = {
-          method: "PATCH",
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({ isGoodDog: !pup.isGoodDog })
-      }
-      fetch(`http://localhost:3000/pups/${pup.id}`, reqObj)
-      .then((resp) => resp.json())
-      .then((infoPup) => {
-        let updatedPups = this.state.pups.map (pup =>  pup.id === infoPup.id ? infoPup : pup )
-        this.setState({
-          pups: updatedPups,
-          infoPup: infoPup
-        })
-      });
+  goodDogClick = (pup) => {
+    const reqObj = {
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ isGoodDog: !pup.isGoodDog })
     }
+    fetch(`http://localhost:3000/pups/${pup.id}`, reqObj)
+    .then((resp) => resp.json())
+    .then((infoPup) => {
+      let updatedPups = this.state.pups.map (pup => pup.id === infoPup.id ? infoPup : pup )
+      this.setState({
+        pups: updatedPups,
+        infoPup: infoPup
+      })
+    });
+  }
   
+  filterPups = () => {
+    this.setState({
+      filter: !this.state.filter
+    })
+
+  }
+
+  displayPups = () => {
+    if(this.state.filter === false) {
+      return this.state.pups
+    } else {
+      return this.state.pups.filter(pup => {
+        return pup.isGoodDog ? pup : null
+      })
+    }
+  }
+
   render() {
-    console.log('hello')
+    console.log("app", this.displayPups())
     return (
       <div className="App">
         <div id="filter-div">
-          <button id="good-dog-filter">Filter good dogs: OFF</button>
+          <button id="good-dog-filter" onClick={() => this.filterPups()}>Filter good dogs: {this.state.filter ? "ON" : "OFF"}</button>
         </div>
-        <DogBar pups={this.state.pups} handleClick={this.handleClick}/>
+        <DogBar pups={this.displayPups()} handleClick={this.handleClick}/>
         <div id="dog-summary-container">
           <h1>DOGGO:</h1>
           {/* <div id="dog-info"> */}

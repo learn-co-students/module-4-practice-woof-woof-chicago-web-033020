@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import DogCard from "../components/DogCard";
-import DogInfo from "../components/DogInfo"
 
 export class dogBar extends Component {
 
-
   renderPups = () => {
+    console.log('dogBar', this.props.pups)
     return this.props.pups.map((pup) => {
       return <DogCard key={pup.id} pup={pup} handleClick={this.props.handleClick} />;
     });
