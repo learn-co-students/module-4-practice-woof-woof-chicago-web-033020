@@ -7,7 +7,7 @@ export class App extends Component {
   
   state = {
     pups: [],
-    infoPup: {}
+    infoPup: null
   };
 
   componentDidMount() {
@@ -37,13 +37,7 @@ export class App extends Component {
       fetch(`http://localhost:3000/pups/${pup.id}`, reqObj)
       .then((resp) => resp.json())
       .then((infoPup) => {
-        let updatedPups = this.state.pups.map (pup => {
-          if (pup.id === infoPup.id) {
-            return infoPup
-          } else {
-            return pup
-          }
-        })
+        let updatedPups = this.state.pups.map (pup =>  pup.id === infoPup.id ? infoPup : pup )
         this.setState({
           pups: updatedPups,
           infoPup: infoPup
@@ -52,6 +46,7 @@ export class App extends Component {
     }
   
   render() {
+    console.log('hello')
     return (
       <div className="App">
         <div id="filter-div">
@@ -61,7 +56,7 @@ export class App extends Component {
         <div id="dog-summary-container">
           <h1>DOGGO:</h1>
           {/* <div id="dog-info"> */}
-            <DogInfo goodDogClick={this.goodDogClick} pup={this.state.infoPup}/>
+           {this.state.infoPup ? <DogInfo goodDogClick={this.goodDogClick} pup={this.state.infoPup}/> : null }
           {/* </div> */}
         </div>
       </div>

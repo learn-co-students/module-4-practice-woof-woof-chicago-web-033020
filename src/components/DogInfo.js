@@ -5,8 +5,7 @@ export default function DogInfo({ goodDogClick, pup }) {
     return pup.isGoodDog ? "Good Dog!" : "Bad Dog!";
   };
 
-  const displayPup = (pup) => {
-    if (pup.name) {
+ 
       return (
         <div id="dog-info">
           <img src={pup.image} alt={pup.name + "puppy"} />
@@ -14,11 +13,7 @@ export default function DogInfo({ goodDogClick, pup }) {
           <button onClick={() => goodDogClick(pup)}>{goodDog(pup)}</button>
         </div>
       );
-    } else {
-      return null;
-    }
-  };
-  return <div>{displayPup(pup)}</div>;
+     
 }
 
 // if (pup !== {}) {
