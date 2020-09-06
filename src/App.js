@@ -55,12 +55,10 @@ export class App extends Component {
   }
 
   displayPups = () => {
-    if(this.state.filter === false) {
-      return this.state.pups
+    if(this.state.filter) {
+      return this.state.pups.filter(pup => pup.isGoodDog)
     } else {
-      return this.state.pups.filter(pup => {
-        return pup.isGoodDog ? pup : null
-      })
+      return this.state.pups
     }
   }
 
@@ -69,7 +67,7 @@ export class App extends Component {
     return (
       <div className="App">
         <div id="filter-div">
-          <button id="good-dog-filter" onClick={() => this.filterPups()}>Filter good dogs: {this.state.filter ? "ON" : "OFF"}</button>
+          <button id="good-dog-filter" onClick={this.filterPups}>Filter good dogs: {this.state.filter ? "ON" : "OFF"}</button>
         </div>
         <DogBar pups={this.displayPups()} handleClick={this.handleClick}/>
         <div id="dog-summary-container">
